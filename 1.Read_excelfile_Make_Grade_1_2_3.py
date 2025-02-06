@@ -45,19 +45,19 @@ for index, row in df[1:].iterrows():
     p5 = np.array(presenter_5, dtype=float)
 
     # --- Step 3: Compute the weighted average for each presenter ---
-    score1 = np.round(np.sum(p1 * weights),4)
-    score2 = np.round(np.sum(p2 * weights),4)
-    score3 = np.round(np.sum(p3 * weights),4)
-    score4 = np.round(np.sum(p4 * weights),4)
-    score5 = np.round(np.sum(p5 * weights),4)
+    score1 = np.round(np.sum(p1 * weights),1)
+    score2 = np.round(np.sum(p2 * weights),1)
+    score3 = np.round(np.sum(p3 * weights),1)
+    score4 = np.round(np.sum(p4 * weights),1)
+    score5 = np.round(np.sum(p5 * weights),1)
 
     # Create a dictionary mapping each presenter to its computed score.
     scores = {
-        "presenter_1": score1,
-        "presenter_2": score2,
-        "presenter_3": score3,
-        "presenter_4": score4,
-        "presenter_5": score5,
+        "presenter-1": score1,
+        "presenter-2": score2,
+        "presenter-3": score3,
+        "presenter-4": score4,
+        "presenter-5": score5,
     }
 
     # --- Step 4: Rank the presenters based on their scores ---
@@ -66,11 +66,11 @@ for index, row in df[1:].iterrows():
 
     # Store everything in the result dictionary.
     result[key] = {
-        "presenter_1": presenter_1,
-        "presenter_2": presenter_2,
-        "presenter_3": presenter_3,
-        "presenter_4": presenter_4,
-        "presenter_5": presenter_5,
+        "presenter-1": presenter_1,
+        "presenter-2": presenter_2,
+        "presenter-3": presenter_3,
+        "presenter-4": presenter_4,
+        "presenter-5": presenter_5,
         "scores": scores  # The weighted average score for each presenter.
     }
 
