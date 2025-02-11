@@ -2,15 +2,16 @@ import pandas as pd
 import numpy as np
 import pickle
 
-# 1) Read the Excel file (no header assumed)
+# 1) Read the Excel file
 file_path = r"C:\Users\Win\Desktop\6thsmart\6th_smartmaterial.xlsx"
-df = pd.read_excel(file_path, header=None)
+df = pd.read_excel(file_path,sheet_name=0, header=None)
 
-# 2) Build a dictionary for each row.
+# 2) Build a dictionary
 # The key for each row is: "{1}_{2}_{3}"
 ##{1}= nickname {2}=university, {3}= Gender
 #Save to Key ={신상정보}, dict={각평가정보}
 result = {}
+
 
 for index, row in df[1:].iterrows():
     # print(row)
@@ -18,7 +19,7 @@ for index, row in df[1:].iterrows():
     # Using .iloc to ensure we refer to columns by their integer index.
     key = f"{row.iloc[1]}_{row.iloc[2]}_{row.iloc[3]}"
 
-    # Extract data from specific column ranges.
+    # Extract data
     presenter_1 = row.iloc[4:13].tolist()  # columns 4 ~ 12
     presenter_2 = row.iloc[13:22].tolist()  # columns 13 ~ 21
     presenter_3 = row.iloc[22:31].tolist()  # columns 14 ~ 22
@@ -60,9 +61,7 @@ for index, row in df[1:].iterrows():
         "presenter-5": score5,
     }
 
-    # --- Step 4: Rank the presenters based on their scores ---
-    # Sorted in descending order (best score first).
-    # ranking = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    # --- Step 4: Ranking
 
     # Store everything in the result dictionary.
     result[key] = {
@@ -74,16 +73,40 @@ for index, row in df[1:].iterrows():
         "scores": scores  # The weighted average score for each presenter.
     }
 
+df1 = pd.read_excel(file_path,sheet_name=1)
+result_sheetschool = {}
+for index, row in df1.iterrows():
 
+    presenter = row['prensenter_name']
+    school = row['school_name']
+    result_sheetschool[presenter] = school
 
-# Optionally, print the resulting dictionary to check its structure.
 print(result)
+print(result_sheetschool)
 
-output_path = r"C:\Users\Win\Desktop\6thsmart\result.pkl"  # Change the path and file name as needed
+df1 = pd.read_excel(file_path,sheet_name=2)
+result_gender = {}
+for index, row in df1.iterrows():
+    presenter = row['prensenter_name']
+    gender = row['Gender']
+    result_gender[presenter] = gender
+
+
+
+output_path = r"C:\Users\Win\Desktop\6thsmart\result.pkl"
+output_path_sheet1 = r"C:\Users\Win\Desktop\6thsmart\schoolname.pkl"
+output_path_sheet2 =r"C:\Users\Win\Desktop\6thsmart\gender.pkl"
+
 
 with open(output_path, "wb") as f:
     pickle.dump(result, f)
 
 print(f"Result saved to {output_path}")
 
+with open(output_path_sheet1, "wb") as f:
+    pickle.dump(result_sheetschool, f)
+print(f"Sheet 1 결과가 {output_path_sheet1} 에 저장되었습니다.")
 
+with open(output_path_sheet2, "wb") as f:
+    pickle.dump(result_gender, f)
+print(f"Sheet 2 결과가 {output_path_sheet2} 에 저장되었습니다.")
