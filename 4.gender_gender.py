@@ -2,17 +2,34 @@ import pandas as pd
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
+import os
+from PIL import Image
+import cv2
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
-result_path = r"C:\Users\Win\Desktop\6thsmart\result.pkl"
-schoolname_path = r"C:\Users\Win\Desktop\6thsmart\gender.pkl"
+result_path = r'..\pklfile\result.pkl'
+schoolname_path = r'..\pklfile\gender.pkl'
 
+###발표자 사진
+#### 발표자 이름과 맞춰 jpg파일로 넣어놔야됨
+image_folder = r'../presenter_image_file'
 data=pd.read_pickle(result_path)
 presenter_school =pd.read_pickle(schoolname_path)
 
 print(presenter_school)
 presenters = ["presenter-1", "presenter-2", "presenter-3", "presenter-4", "presenter-5"]
-
 gender_list = ["Male", "Female"]
+
+
+presenter_images = {}
+for presenter in presenters:
+    image_path = os.path.join(image_folder, f"{presenter}.jpg")
+    if os.path.exists(image_path):
+        presenter_images[presenter] = cv2.imread(image_path)  # 이미지 로드
+        # cv2.imshow('gray_image', presenter_images[presenter])
+        # cv2.waitKey(0)
+    else:
+        print(f"⚠ 이미지 파일 없음: {image_path}")  # 없는 파일 알림
 
 
 gender_total_scores = {gender: {presenter: 0 for presenter in presenters} for gender in gender_list}
@@ -45,13 +62,26 @@ for school in gender_total_scores:
 
 # DataFrame으로 변환하여 보기 좋게 출력
 df_gender_avg = pd.DataFrame(gender_avg_scores).T  # 전치해서 각 행이 학교, 각 열이 presenter가 되도록
-print(df_gender_avg)
+
+#  숫자로 변환 (문자열로 변환된 숫자가 있다면)
+df_gender_avg = df_gender_avg.applymap(lambda x: float(x) if isinstance(x, str) and x.replace('.', '', 1).isdigit() else x)
+
+# 데이터프레임 전체에서 Min-Max 정규화 수행 (컬럼별이 아니라 전체 기준)
+global_min = df_gender_avg.min().min()  # 데이터프레임 전체에서 최소값 찾기
+global_max = df_gender_avg.max().max()  # 데이터프레임 전체에서 최대값 찾기
+
+# Gender to 발표자에서 가장 점수를 잘 준 점수  : Max :1.0
+# Gender to 발표자에서 가장 점수를 낮게 준 점수: Min :0.0
+df_gender_avg = df_gender_avg.applymap(lambda x: (x - global_min) / (global_max - global_min) if isinstance(x, (int, float)) else x)
+
+
+# print(df_gender_avg)
 # df_gender_avg.rename(columns=gender, inplace=True)
 
 df_gender_avg.index.name = "gender"
 df_gender_avg.columns.name = "Presenter"
 
-print(df_gender_avg)
+# print(df_gender_avg)
 
 # 소수점 두 자리로 포맷 (문자열로 변환)
 df_gender_avg = df_gender_avg.applymap(lambda x: f"{x:.2f}" if isinstance(x, (int, float)) else x)
@@ -73,27 +103,36 @@ table = ax.table(cellText=df_gender_avg.values,
                  rowLabels=df_gender_avg.index,
                  loc='center')
 
-# 폰트 크기와 테이블 크기를 조절 (원하는 대로 수정)
+# ✅ 폰트 및 크기 조절
 table.auto_set_font_size(False)
 table.set_fontsize(10)
-table.scale(0.88, 1.2)
+table.scale(1.00, 1.2)
 
-# 실제 데이터 셀은 (i, j)에서 i>=1, j>=1 입니다.
-cells = table.get_celld()
-# df_school_avg의 행 수와 열 수
 
-# 조건에 해당하는 셀 정보를 저장할 리스트 생성
-red_cells = []
+rows = 3
+cols = 5
+i = 1
 
+for idx, presenter in enumerate(presenters):
+    if presenter in presenter_images:  # 인덱스 초과 방지
+        img = presenter_images[presenter]
+        ax = fig.add_subplot(rows, cols, i)
+        plt.axis("off")
+        ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        i+=1
+
+
+# ✅ 결과 출력
 plt.show()
 
-# 리스트를 DataFrame으로 변환
-df_red_cells = pd.DataFrame(red_cells)
+# 이미지가 테이블 위에 표시되도록 설정
+ax.set_zorder(2)
+fig.canvas.draw()  # 렌더링 강제 업데이트
+plt.show()
 
-print(df_red_cells)
 # 이미지(JPG)로 저장
-output_jpg_path = r"C:\Users\Win\Desktop\6thsmart\school_avg_scores.jpg"
-plt.savefig(output_jpg_path, bbox_inches='tight', dpi=300)  # dpi는 원하는 해상도에 맞게 조절
+output_jpg_path = r'..\jpgfile\gender_avg_scores.jpg'
+plt.savefig(output_jpg_path, bbox_inches='tight', dpi=600)  # dpi는 원하는 해상도에 맞게 조절
 
 
 # print(f"DataFrame 테이블이 JPG 파일로 저장되었습니다: {output_jpg_path}")

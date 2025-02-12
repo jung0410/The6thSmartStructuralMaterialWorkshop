@@ -3,8 +3,13 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 
-result_path = r"C:\Users\Win\Desktop\6thsmart\result.pkl"
-schoolname_path = r"C:\Users\Win\Desktop\6thsmart\schoolname.pkl"
+# 어느 컴에서든 작동하도록 상대위치로 폴더경로를 정하면 좋다.
+result_path = r'..\pklfile\result.pkl'
+schoolname_path = r'..\pklfile\schoolname.pkl'
+
+
+output_jpg_path = r"..\jpgfile\school_avg_scores.jpg"
+
 
 data=pd.read_pickle(result_path)
 presenter_school =pd.read_pickle(schoolname_path)
@@ -53,11 +58,29 @@ df_school_avg.columns.name = "Presenter"
 print(df_school_avg)
 
 # 소수점 두 자리로 포맷 (문자열로 변환)
-df_school_avg = df_school_avg.applymap(lambda x: f"{x:.2f}" if isinstance(x, (int, float)) else x)
+# df_school_avg = df_school_avg.applymap(lambda x: f"{x:.2f}" if isinstance(x, (int, float)) else x)
+print(df_school_avg)
+
+#  숫자로 변환 (문자열로 변환된 숫자가 있다면)
+df_school_avg = df_school_avg.applymap(lambda x: float(x) if isinstance(x, str) and x.replace('.', '', 1).isdigit() else x)
+
+# 데이터프레임 전체에서 Min-Max 정규화 수행 (컬럼별이 아니라 전체 기준
+global_min = df_school_avg.min().min()  # 데이터프레임 전체에서 최소값 찾기
+global_max = df_school_avg.max().max()  # 데이터프레임 전체에서 최대값 찾기
+
+# 학교 to 학교에서 가장 점수를 잘 준 점수  : Max :1.0
+# 학교 to 학교에서 가장 점수를 낮게 준 점수: Min :0.0
+df_school_avg = df_school_avg.applymap(lambda x: (x - global_min) / (global_max - global_min) if isinstance(x, (int, float)) else x)
+
+# 소수점 2자리로 변환
+df_school_avg = df_school_avg.applymap(lambda x: round(x, 2) if isinstance(x, (int, float)) else x)
+
+print(df_school_avg)
+
 
 
 # 도와줘 gpt야
-# #####예쁘게 좀 만들어봐
+#####예쁘게 좀 만들어봐
 fig, ax = plt.subplots(figsize=(8, 4))  # 크기는 원하는 대로 조정하세요
 # 한글 폰트 설정 한국말꺠져서 사용함
 plt.rcParams["font.family"] = "Malgun Gothic"
@@ -72,6 +95,7 @@ table = ax.table(cellText=df_school_avg.values,
                  rowLabels=df_school_avg.index,
                  loc='center')
 
+
 # 폰트 크기와 테이블 크기를 조절 (원하는 대로 수정)
 table.auto_set_font_size(False)
 table.set_fontsize(10)
@@ -81,18 +105,43 @@ table.scale(0.88, 1.2)
 cells = table.get_celld()
 # df_school_avg의 행 수와 열 수
 
-# 조건에 해당하는 셀 정보를 저장할 리스트 생성
-red_cells = []
+#대각선 값
+diag_indices = list(zip(range(len(df_school_avg)), range(len(df_school_avg.columns))))
+diag_values = [df_school_avg.iloc[i, j] for i, j in diag_indices]
 
+# 학교별 자신의 학교에게 준 최댓값, 최솟값 찾기
+max_value = max(diag_values)
+min_value = min(diag_values)
+
+
+# 색상 설정 GPT야 부탁해
+highlight_color = "#FFD700"  # 대각선 기본 색상 (골드)
+max_color = "#FF6347"  # 최댓값 색상 (토마토색)
+min_color = "#4682B4"  # 최솟값 색상 (스틸블루)
+
+# 대각선 값 색상 설정
+for (i, j) in diag_indices:
+    cell = cells[(i + 1, j)]
+    value = df_school_avg.iloc[i, j]
+
+    if value == max_value:
+        cell.set_facecolor(max_color)  # 최댓값
+    elif value == min_value:
+        cell.set_facecolor(min_color)  # 최솟값
+    else:
+        cell.set_facecolor(highlight_color)  # 일반 대각선 값
+
+
+
+plt.savefig(output_jpg_path, bbox_inches='tight', dpi=300)  # dpi는 원하는 해상도에 맞게 조절
 plt.show()
 
-# 리스트를 DataFrame으로 변환
-df_red_cells = pd.DataFrame(red_cells)
+# # 리스트를 DataFrame으로 변환
+# df_red_cells = pd.DataFrame(red_cells)
 
-print(df_red_cells)
 # 이미지(JPG)로 저장
-# output_jpg_path = r"C:\Users\Win\Desktop\6thsmart\school_avg_scores.jpg"
-# plt.savefig(output_jpg_path, bbox_inches='tight', dpi=300)  # dpi는 원하는 해상도에 맞게 조절
+#
+#
 # plt.close(fig)
 
 # print(f"DataFrame 테이블이 JPG 파일로 저장되었습니다: {output_jpg_path}")

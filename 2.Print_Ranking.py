@@ -1,10 +1,16 @@
 import pandas as pd
 import numpy as np
 import pickle
+import os
 import matplotlib.pyplot as plt
 
-output_path = r"C:\Users\Win\Desktop\6thsmart\result.pkl"
+output_path = r'../pklfile/result.pkl'
+# 저장할 폴더 경로와 파일 이름을 별도로 정의합니다.
+save_dir = r'../jpgfile'
+
 data=pd.read_pickle(output_path)
+
+
 
 presenters = ["presenter-1", "presenter-2", "presenter-3", "presenter-4", "presenter-5"]
 total_scores = {presenter: 0 for presenter in presenters}
@@ -54,7 +60,11 @@ ax.text(0.1, y_start - len(sorted_averages) * line_spacing - 0.1, winner_message
         fontsize=20, fontweight='bold', color='red', transform=ax.transAxes)
 
 # plt.rcParams['font.family'] = 'Arial'
+filename = f"Ranking_ALL.jpg"
+save_path = os.path.join(save_dir, filename)
+
 plt.tight_layout()
+plt.savefig(save_path)
 plt.show()
 
 
@@ -74,17 +84,20 @@ def generate_winner_certificate(sorted_averages,grade):
 
     ax.set_title(f" Congratulations!\n\nthe 6th Smart Structal Maaterial Workshop\n {gradest} Prize", fontsize=24, fontweight='bold', color='black', pad=20)
 
-    # Add a gold crown emoji and the winner's name in a luxurious font style
     winner_text = f"️ {top_presenter} ️"
     ax.text(0.5, 0.8, winner_text, fontsize=50, fontweight='bold', ha='center', va='center', color='darkblue', transform=ax.transAxes)
 
-    # Add the score in an elegant way
+
     score_text = f"Achieved an Outstanding Score of {top_score:.4f}"
     ax.text(0.5, 0.4, score_text, fontsize=20, fontweight='bold', ha='center', va='center', color='black', transform=ax.transAxes)
 
     # Show the final image
     # plt.rcParams['font.family'] = 'Arial'
+    filename = f"Ranking{grade}.jpg"
+    save_path = os.path.join(save_dir, filename)
+
     plt.tight_layout()
+    plt.savefig(save_path)
     plt.show()
 
 

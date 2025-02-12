@@ -1,12 +1,21 @@
 import pandas as pd
 import numpy as np
 import pickle
+import os
 
-# 1) Read the Excel file
-file_path = r"C:\Users\Win\Desktop\6thsmart\6th_smartmaterial.xlsx"
+#1)엑셀 장소
+####값 고정 test 파일
+# file_path = r"C:/Users/Win/OneDrive/Lab_공유/2025 워크샵/python파일/6th_smartmaterial.xlsx"
+####랜덤 test 파일
+file_path = r"../6th_smartmaterial_Random.xlsx"
 df = pd.read_excel(file_path,sheet_name=0, header=None)
 
-# 2) Build a dictionary
+#2)저장 장소
+output_path =r"../pklfile/result.pkl"
+output_path_sheet1 = r'../pklfile/schoolname.pkl'
+output_path_sheet2 =r'../pklfile/gender.pkl'
+
+
 # The key for each row is: "{1}_{2}_{3}"
 ##{1}= nickname {2}=university, {3}= Gender
 #Save to Key ={신상정보}, dict={각평가정보}
@@ -91,22 +100,30 @@ for index, row in df1.iterrows():
     gender = row['Gender']
     result_gender[presenter] = gender
 
+def ensure_directory_exists(file_path):
+    directory = os.path.dirname(file_path)  # 파일의 디렉터리 경로 가져오기
+    if not os.path.exists(directory):  # 폴더가 없으면
+        os.makedirs(directory)  # 폴더 생성
+        print(f"📁 디렉터리 생성: {directory}")
+
+# with open(output_path, "wb") as f:
+#     pickle.dump(result, f)
+#
+# print(f"Result saved to {output_path}")
+#
+# with open(output_path_sheet1, "wb") as f:
+#     pickle.dump(result_sheetschool, f)
+# print(f"Sheet 1 결과가 {output_path_sheet1} 에 저장되었습니다.")
+#
+# with open(output_path_sheet2, "wb") as f:
+#     pickle.dump(result_gender, f)
+# print(f"Sheet 2 결과가 {output_path_sheet2} 에 저장되었습니다.")
 
 
-output_path = r"C:\Users\Win\Desktop\6thsmart\result.pkl"
-output_path_sheet1 = r"C:\Users\Win\Desktop\6thsmart\schoolname.pkl"
-output_path_sheet2 =r"C:\Users\Win\Desktop\6thsmart\gender.pkl"
-
-
-with open(output_path, "wb") as f:
-    pickle.dump(result, f)
-
-print(f"Result saved to {output_path}")
-
-with open(output_path_sheet1, "wb") as f:
-    pickle.dump(result_sheetschool, f)
-print(f"Sheet 1 결과가 {output_path_sheet1} 에 저장되었습니다.")
-
-with open(output_path_sheet2, "wb") as f:
-    pickle.dump(result_gender, f)
-print(f"Sheet 2 결과가 {output_path_sheet2} 에 저장되었습니다.")
+for path, data, name in [(output_path, result, "Result"),
+                         (output_path_sheet1, result_sheetschool, "Sheet 1"),
+                         (output_path_sheet2, result_gender, "Sheet 2")]:
+    ensure_directory_exists(path)  # 폴더 확인 및 생성
+    with open(path, "wb") as f:
+        pickle.dump(data, f)
+    print(f"✅ {name} 결과가 {path} 에 저장되었습니다.")
