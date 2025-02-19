@@ -3,6 +3,9 @@ import numpy as np
 import pickle
 import os
 import matplotlib.pyplot as plt
+import sys
+sys.stdout.reconfigure(encoding='utf-8')  # 출력 인코딩 UTF-8 설정
+
 
 output_path = r'../pklfile/result.pkl'
 # 저장할 폴더 경로와 파일 이름을 별도로 정의합니다.
@@ -10,9 +13,11 @@ save_dir = r'../jpgfile'
 
 data=pd.read_pickle(output_path)
 
+plt.rcParams['font.family'] = 'Malgun Gothic'  # 윈도우 기본 한글 폰트
+plt.rcParams['axes.unicode_minus'] = False  # 마이너스(-) 기호 깨짐 방지
 
 
-presenters = ["presenter-1", "presenter-2", "presenter-3", "presenter-4", "presenter-5"]
+presenters = ["임동규", "주수환", "김현수", "김성종", "엄가현"]
 total_scores = {presenter: 0 for presenter in presenters}
 num_entries = len(data)
 
@@ -88,7 +93,7 @@ def generate_winner_certificate(sorted_averages,grade):
     ax.text(0.5, 0.8, winner_text, fontsize=50, fontweight='bold', ha='center', va='center', color='darkblue', transform=ax.transAxes)
 
 
-    score_text = f"Achieved an Outstanding Score of {top_score:.4f}"
+    score_text = f"Achieved an Outstanding Score of {top_score:.2f}"
     ax.text(0.5, 0.4, score_text, fontsize=20, fontweight='bold', ha='center', va='center', color='black', transform=ax.transAxes)
 
     # Show the final image

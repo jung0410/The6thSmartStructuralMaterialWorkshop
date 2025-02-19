@@ -37,15 +37,19 @@ for index, row in df[1:].iterrows():
 
     # Store the groups in a dictionary.
     result[key] = {
-        "presenter_1":  presenter_1,
-        "presenter_2": presenter_2,
-        "presenter_3": presenter_3,
-        "presenter_4": presenter_4,
-        "presenter_5": presenter_5
+        "임동규":  presenter_1,
+        "주수환": presenter_2,
+        "김현수": presenter_3,
+        "김성종": presenter_4,
+        "엄가현": presenter_5
     }
     ##MAX num 5*9 = 45
     ###100/45=2
-    weights = np.array([2, 2, 2, 2, 2, 2, 2, 2, 4])
+    ### 5(배점수)* (가중치 * 문제수) =100 이 되어야 함
+    ## 발표태도 30 5*(2*3=6)  (1,2,3) =(2,2,2,)
+    ## 발표내용 40 5*(2*4=8) (4,5,6,7)
+    ## Q&A    30 5*(3*2=6) (8,9)
+    weights = np.array([2, 2, 2, 2, 2, 2, 2, 3, 3])
 
     # Convert lists to NumPy arrays (and cast to float) to allow numerical operations.
     p1 = np.array(presenter_1, dtype=float)
@@ -63,30 +67,30 @@ for index, row in df[1:].iterrows():
 
     # Create a dictionary mapping each presenter to its computed score.
     scores = {
-        "presenter-1": score1,
-        "presenter-2": score2,
-        "presenter-3": score3,
-        "presenter-4": score4,
-        "presenter-5": score5,
+        "임동규": score1,
+        "주수환": score2,
+        "김현수": score3,
+        "김성종": score4,
+        "엄가현": score5,
     }
 
     # --- Step 4: Ranking
 
     # Store everything in the result dictionary.
     result[key] = {
-        "presenter-1": presenter_1,
-        "presenter-2": presenter_2,
-        "presenter-3": presenter_3,
-        "presenter-4": presenter_4,
-        "presenter-5": presenter_5,
+        "임동규": presenter_1,
+        "주수환": presenter_2,
+        "김현수": presenter_3,
+        "김성종": presenter_4,
+        "엄가현": presenter_5,
         "scores": scores  # The weighted average score for each presenter.
     }
 
 df1 = pd.read_excel(file_path,sheet_name=1)
 result_sheetschool = {}
 for index, row in df1.iterrows():
-
     presenter = row['prensenter_name']
+    print(presenter)
     school = row['school_name']
     result_sheetschool[presenter] = school
 
@@ -94,6 +98,7 @@ print(result)
 print(result_sheetschool)
 
 df1 = pd.read_excel(file_path,sheet_name=2)
+print(df1)
 result_gender = {}
 for index, row in df1.iterrows():
     presenter = row['prensenter_name']
