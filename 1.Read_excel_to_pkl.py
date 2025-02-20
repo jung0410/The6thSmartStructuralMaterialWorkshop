@@ -37,19 +37,19 @@ for index, row in df[1:].iterrows():
 
     # Store the groups in a dictionary.
     result[key] = {
-        "임동규":  presenter_1,
-        "주수환": presenter_2,
-        "김현수": presenter_3,
-        "김성종": presenter_4,
-        "엄가현": presenter_5
+         "엄가현": presenter_1,
+        "임동규": presenter_2,
+        "김성종": presenter_3,
+        "주수환": presenter_4,
+        "김현수": presenter_5,
     }
     ##MAX num 5*9 = 45
     ###100/45=2
     ### 5(배점수)* (가중치 * 문제수) =100 이 되어야 함
-    ## 발표태도 30 5*(2*3=6)  (1,2,3) =(2,2,2,)
-    ## 발표내용 40 5*(2*4=8) (4,5,6,7)
-    ## Q&A    30 5*(3*2=6) (8,9)
-    weights = np.array([2, 2, 2, 2, 2, 2, 2, 3, 3])
+    ## 발표태도  30 = 5 * (2*3 = 6)  (1,2,3) =(2,2,2,)
+    ## 발표내용  50 = 5 * (2.5*4 = 10) (4,5,6,7)
+    ## Q&A      20 = 5 * (2*2 = 4) (8,9)
+    weights = np.array([2, 2, 2, 2.5, 2.5, 2.5, 2.5, 2, 2])
 
     # Convert lists to NumPy arrays (and cast to float) to allow numerical operations.
     p1 = np.array(presenter_1, dtype=float)
@@ -67,22 +67,19 @@ for index, row in df[1:].iterrows():
 
     # Create a dictionary mapping each presenter to its computed score.
     scores = {
-        "임동규": score1,
-        "주수환": score2,
-        "김현수": score3,
-        "김성종": score4,
-        "엄가현": score5,
+        "엄가현": score1,
+        "임동규": score2,
+        "김성종": score3,
+        "주수환": score4,
+        "김현수": score5,
     }
 
-    # --- Step 4: Ranking
-
-    # Store everything in the result dictionary.
     result[key] = {
-        "임동규": presenter_1,
-        "주수환": presenter_2,
-        "김현수": presenter_3,
-        "김성종": presenter_4,
-        "엄가현": presenter_5,
+        "엄가현": presenter_1,
+        "임동규": presenter_2,
+        "김성종": presenter_3,
+        "주수환": presenter_4,
+        "김현수": presenter_5,
         "scores": scores  # The weighted average score for each presenter.
     }
 
@@ -109,7 +106,7 @@ def ensure_directory_exists(file_path):
     directory = os.path.dirname(file_path)  # 파일의 디렉터리 경로 가져오기
     if not os.path.exists(directory):  # 폴더가 없으면
         os.makedirs(directory)  # 폴더 생성
-        print(f"📁 디렉터리 생성: {directory}")
+        print(f"디렉터리 생성: {directory}")
 
 # with open(output_path, "wb") as f:
 #     pickle.dump(result, f)
@@ -131,4 +128,4 @@ for path, data, name in [(output_path, result, "Result"),
     ensure_directory_exists(path)  # 폴더 확인 및 생성
     with open(path, "wb") as f:
         pickle.dump(data, f)
-    print(f"✅ {name} 결과가 {path} 에 저장되었습니다.")
+    print(f"  {name} 결과가 {path} 에 저장되었습니다.")

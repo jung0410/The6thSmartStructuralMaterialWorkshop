@@ -17,7 +17,7 @@ plt.rcParams['font.family'] = 'Malgun Gothic'  # 윈도우 기본 한글 폰트
 plt.rcParams['axes.unicode_minus'] = False  # 마이너스(-) 기호 깨짐 방지
 
 
-presenters = ["임동규", "주수환", "김현수", "김성종", "엄가현"]
+presenters = ["엄가현", "임동규", "김성종", "주수환", "김현수"]
 total_scores = {presenter: 0 for presenter in presenters}
 num_entries = len(data)
 

@@ -17,10 +17,10 @@ presenter_school =pd.read_pickle(schoolname_path)
 print(presenter_school)
 # presenters = ["presenter-1", "presenter-2", "presenter-3", "presenter-4", "presenter-5"]
 
-presenters = ["임동규", "주수환", "김현수", "김성종", "엄가현"]
+presenters = ["엄가현", "임동규", "김성종", "주수환", "김현수"]
 
 # school_list = ["중앙대학교", "단국대학교", "한양대 에리카", "가천대학교", "유니스트"]
-school_list = ["단국대학교", "유니스트", "가천대학교", "중앙대학교", "한양대 에리카"]
+school_list = ["한양대 에리카", "단국대학교", "중앙대학교", "유니스트", "가천대학교"]
 
 school_total_scores = {school: {presenter: 0 for presenter in presenters} for school in school_list}
 school_counts = {school: 0 for school in school_list}

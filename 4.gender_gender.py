@@ -17,7 +17,7 @@ data=pd.read_pickle(result_path)
 presenter_school =pd.read_pickle(schoolname_path)
 
 print(presenter_school)
-presenters = ["임동규", "주수환", "김현수", "김성종", "엄가현"]
+presenters =  ["엄가현", "임동규", "김성종", "주수환", "김현수"]
 gender_list = ["Male", "Female"]
 
 
