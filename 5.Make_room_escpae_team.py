@@ -101,6 +101,7 @@ plt.axvline(x=5, color='black', linestyle='--', linewidth=1)
 
 
 plt.tight_layout()
+plt.savefig('../jpgfile/grade.jpg')
 plt.show()
 
 
@@ -137,4 +138,5 @@ plt.pie(group_sums, labels=group_labels, colors=group_colors,
 # plt.title("2D Pie Chart of Groups", fontsize=20, fontweight='bold')
 plt.axis('equal')  # 원형 유지
 plt.tight_layout()
+plt.savefig('../jpgfile/savefig_pie.jpg')
 plt.show()
